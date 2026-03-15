@@ -1,6 +1,12 @@
 spring:
   application:
     name: AIAgent
+  ai:
+    dashscope:
+      api-key: ${DASHSCOPE_API_KEY}
+      chat:
+        options:
+          model: qwen-max
 server:
   port: 8123
   servlet:
