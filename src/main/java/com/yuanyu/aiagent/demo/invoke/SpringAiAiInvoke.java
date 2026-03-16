@@ -28,15 +28,17 @@ public class SpringAiAiInvoke implements CommandLineRunner {
         //         .getOutput();// 获取输出
         // System.out.println(assistantMessage.getText());
 
-        ChatClient chatClient = ChatClient.builder(dashscopeChatModel)
-                .defaultSystem("用户说Ciallo时回复‘柚子厨蒸鹅心’")
-                .build();
 
-        String content = chatClient.prompt()
-                .user("Ciallo～(∠・ω< )⌒☆")
-                .call()
-                .content();
 
-        System.out.println(content);
+        // ChatClient chatClient = ChatClient.builder(dashscopeChatModel)
+        //         .defaultSystem("用户说Ciallo时回复‘柚子厨蒸鹅心’")
+        //         .build();
+        //
+        // String content = chatClient.prompt()
+        //         .user("Ciallo～(∠・ω< )⌒☆")
+        //         .call()
+        //         .content();
+        //
+        // System.out.println(content);
     }
 }
