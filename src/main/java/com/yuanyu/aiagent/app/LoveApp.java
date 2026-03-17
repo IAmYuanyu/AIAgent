@@ -1,6 +1,9 @@
 package com.yuanyu.aiagent.app;
 
+import com.yuanyu.aiagent.advisor.MyLoggerAdvisor;
+import com.yuanyu.aiagent.advisor.ReReadingAdvisor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.chat.client.AdvisorParams;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
@@ -8,6 +11,8 @@ import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 @Slf4j
@@ -33,13 +38,15 @@ public class LoveApp {
         chatClient = ChatClient.builder(dashscopeChatModel)
                 .defaultSystem(SYSTEM_PROMPT)
                 .defaultAdvisors(
-                        MessageChatMemoryAdvisor.builder(memory).build()
+                        MessageChatMemoryAdvisor.builder(memory).build(),
+                        new MyLoggerAdvisor() // 自定义日志拦截器
+                        // new ReReadingAdvisor()
                 )
                 .build();
     }
 
     /**
-     * AI 对话
+     * AI 恋爱对话
      * @param message
      * @param chatId
      * @return
@@ -53,5 +60,28 @@ public class LoveApp {
         String content = chatResponse.getResult().getOutput().getText();
         log.info("content: {}", content);
         return content;
+    }
+
+
+    // 定‌义恋爱报告类，可以使用 Java 14 引入的 record 特性快速定义
+    record LoveReport(String title, List<String> suggestions) {
+    }
+
+    /**
+     * AI 恋爱报告 - 结构化输出练习
+     * @param message
+     * @param chatId
+     * @return
+     */
+    public LoveReport doChatWithReport(String message, String chatId) {
+        LoveReport loveReport = chatClient.prompt()
+                .system(SYSTEM_PROMPT + "每次对话后都要生成恋爱结果，标题为{用户名}的恋爱报告，内容为建议列表")
+                .user(message)
+                .advisors(spec -> spec.param(ChatMemory.CONVERSATION_ID, chatId))
+                // .advisors(AdvisorParams.ENABLE_NATIVE_STRUCTURED_OUTPUT)
+                .call()
+                .entity(LoveReport.class);
+        log.info("loveReport: {}", loveReport);
+        return loveReport;
     }
 }

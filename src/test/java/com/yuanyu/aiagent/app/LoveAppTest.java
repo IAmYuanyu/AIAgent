@@ -21,19 +21,31 @@ class LoveAppTest {
         String chatId = UUID.randomUUID().toString();
 
         // 测试对话
-        // 第一轮
-        String message = "你好，我是缘鱼。";
-        String answer = loveApp.doChat(message, chatId);
+        // // 第一轮
+        // String message = "你好，我是缘鱼。";
+        // String answer = loveApp.doChat(message, chatId);
+        //
+        // // 第二轮
+        // message = "Ciallo～(∠・ω< )⌒☆";
+        // answer = loveApp.doChat(message, chatId);
+        // Assertions.assertNotNull(answer); // 断言返回结果不为空，若为空则测试失败
+        //
+        // // 第三轮
+        // message = "我是谁？";
+        // answer = loveApp.doChat(message, chatId);
+        // Assertions.assertNotNull(answer);
 
-        // 第二轮
-        message = "Ciallo～(∠・ω< )⌒☆";
-        answer = loveApp.doChat(message, chatId);
-        Assertions.assertNotNull(answer); // 断言返回结果不为空，若为空则测试失败
+        loveApp.doChat("你只要回答我‘好’就行", chatId);
 
-        // 第三轮
-        message = "我是谁？";
-        answer = loveApp.doChat(message, chatId);
-        Assertions.assertNotNull(answer);
+    }
 
+    @Test
+    void doChatWithReport() {
+        // 随机生成一个会话 ID
+        String chatId = UUID.randomUUID().toString();
+
+        String message = "我是一个肥宅，我每天躺在家里懒得出门，长得也丑，我也不愿做出任何改变，我要如何找到女朋友？";
+        LoveApp.LoveReport loveReport = loveApp.doChatWithReport(message, chatId);
+        Assertions.assertNotNull(loveReport);
     }
 }

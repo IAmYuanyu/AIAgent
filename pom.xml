@@ -79,6 +79,12 @@
             <artifactId>langchain4j-community-dashscope</artifactId>
             <version>1.12.2-beta22</version>
         </dependency>
+        <!-- JSON Schema 生成依赖，结构化输出需要用到 -->
+        <dependency>
+            <groupId>com.github.victools</groupId>
+            <artifactId>jsonschema-generator</artifactId>
+            <version>4.38.0</version>
+        </dependency>
     </dependencies>
 
     <build>
