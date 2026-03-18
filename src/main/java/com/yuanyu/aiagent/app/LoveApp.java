@@ -1,6 +1,7 @@
 package com.yuanyu.aiagent.app;
 
 import com.yuanyu.aiagent.advisor.MyLoggerAdvisor;
+import com.yuanyu.aiagent.advisor.PoliteCheckAdvisor;
 import com.yuanyu.aiagent.advisor.ReReadingAdvisor;
 import com.yuanyu.aiagent.chatmemory.FileBasedChatMemory;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +44,8 @@ public class LoveApp {
         chatClient = ChatClient.builder(dashscopeChatModel)
                 .defaultSystem(SYSTEM_PROMPT)
                 .defaultAdvisors(
-                        MessageChatMemoryAdvisor.builder(memory).build()
+                        MessageChatMemoryAdvisor.builder(memory).build(),
+                        new PoliteCheckAdvisor() // 文明卫士
                         // new MyLoggerAdvisor() // 自定义日志拦截器
                         // new ReReadingAdvisor()
                 )
