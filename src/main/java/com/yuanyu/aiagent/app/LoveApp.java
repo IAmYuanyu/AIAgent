@@ -2,6 +2,7 @@ package com.yuanyu.aiagent.app;
 
 import com.yuanyu.aiagent.advisor.MyLoggerAdvisor;
 import com.yuanyu.aiagent.advisor.ReReadingAdvisor;
+import com.yuanyu.aiagent.chatmemory.FileBasedChatMemory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.AdvisorParams;
 import org.springframework.ai.chat.client.ChatClient;
@@ -31,15 +32,19 @@ public class LoveApp {
      */
     public LoveApp(ChatModel dashscopeChatModel) {
         // 初始化基于内存的对话记忆
-        ChatMemory memory = MessageWindowChatMemory.builder()
-                .maxMessages(10) // 最多保存 10 条消息（默认20条）
-                .build();
+        // ChatMemory memory = MessageWindowChatMemory.builder()
+        //         .maxMessages(10) // 最多保存 10 条消息（默认20条）
+        //         .build();
+
+        // 初始化基于本地文件的对话记忆
+        String fileDir = System.getProperty("user.dir") + "/tmp/char-memory";
+        FileBasedChatMemory memory = new FileBasedChatMemory(fileDir);
 
         chatClient = ChatClient.builder(dashscopeChatModel)
                 .defaultSystem(SYSTEM_PROMPT)
                 .defaultAdvisors(
-                        MessageChatMemoryAdvisor.builder(memory).build(),
-                        new MyLoggerAdvisor() // 自定义日志拦截器
+                        MessageChatMemoryAdvisor.builder(memory).build()
+                        // new MyLoggerAdvisor() // 自定义日志拦截器
                         // new ReReadingAdvisor()
                 )
                 .build();
@@ -54,6 +59,7 @@ public class LoveApp {
     public String doChat(String message, String chatId) {
         ChatResponse chatResponse = chatClient.prompt()
                 .user(message)
+                .system("简短地回答")
                 .advisors(spec -> spec.param(ChatMemory.CONVERSATION_ID, chatId))
                 .call()
                 .chatResponse();

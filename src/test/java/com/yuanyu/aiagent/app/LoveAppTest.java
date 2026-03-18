@@ -35,7 +35,9 @@ class LoveAppTest {
         // answer = loveApp.doChat(message, chatId);
         // Assertions.assertNotNull(answer);
 
-        loveApp.doChat("你只要回答我‘好’就行", chatId);
+        loveApp.doChat("记住，我叫缘鱼", chatId);
+        loveApp.doChat("我是谁？", chatId);
+
 
     }
 
