@@ -7,6 +7,11 @@ spring:
       chat:
         options:
           model: qwen-max
+  datasource:
+    url: jdbc:mysql://localhost:3306/aiagent?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
 server:
   port: 8123
   servlet:
@@ -23,7 +28,6 @@ springdoc:
     - group: 'default'
       paths-to-match: '/**'
       packages-to-scan: com.yuanyu.aiagent.controller
-# knife4j ???????????????
 knife4j:
   enable: true
   setting:
@@ -31,3 +35,7 @@ knife4j:
 # logging:
 #   level:
 #     com.yuanyu.aiagent: debug
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath*:/mapper/**/*.xml

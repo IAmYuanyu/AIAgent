@@ -4,6 +4,9 @@ import com.yuanyu.aiagent.advisor.MyLoggerAdvisor;
 import com.yuanyu.aiagent.advisor.PoliteCheckAdvisor;
 import com.yuanyu.aiagent.advisor.ReReadingAdvisor;
 import com.yuanyu.aiagent.chatmemory.FileBasedChatMemory;
+import com.yuanyu.aiagent.chatmemory.MysqlBasedChatMemory;
+import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.AdvisorParams;
 import org.springframework.ai.chat.client.ChatClient;
@@ -12,6 +15,7 @@ import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,7 +23,6 @@ import java.util.List;
 @Component
 @Slf4j
 public class LoveApp {
-
     private final ChatClient chatClient;
 
     private static final String SYSTEM_PROMPT = "扮演深耕恋爱心理领域的专家。" +
@@ -28,24 +31,24 @@ public class LoveApp {
             "已婚状态询问家庭责任与亲属关系处理的问题。引导用户详述事情经过、对方反应及自身想法，以便给出专属解决方案。";
 
     /**
-     * 初始化 ChatClient
+     * 初始化 ChatClient，基于Mysql持久化对话
      * @param dashscopeChatModel
      */
-    public LoveApp(ChatModel dashscopeChatModel) {
+    public LoveApp(MysqlBasedChatMemory memory, ChatModel dashscopeChatModel) {
         // 初始化基于内存的对话记忆
         // ChatMemory memory = MessageWindowChatMemory.builder()
         //         .maxMessages(10) // 最多保存 10 条消息（默认20条）
         //         .build();
 
         // 初始化基于本地文件的对话记忆
-        String fileDir = System.getProperty("user.dir") + "/tmp/char-memory";
-        FileBasedChatMemory memory = new FileBasedChatMemory(fileDir);
+        // String fileDir = System.getProperty("user.dir") + "/tmp/char-memory";
+        // FileBasedChatMemory memory = new FileBasedChatMemory(fileDir);
 
         chatClient = ChatClient.builder(dashscopeChatModel)
                 .defaultSystem(SYSTEM_PROMPT)
                 .defaultAdvisors(
-                        MessageChatMemoryAdvisor.builder(memory).build(),
-                        new PoliteCheckAdvisor() // 文明卫士
+                        MessageChatMemoryAdvisor.builder(memory).build()
+                        // new PoliteCheckAdvisor() // 文明卫士
                         // new MyLoggerAdvisor() // 自定义日志拦截器
                         // new ReReadingAdvisor()
                 )
