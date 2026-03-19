@@ -39,9 +39,10 @@ public class LoveApp {
      * 初始化 ChatClient，基于Mysql持久化对话
      * @param dashscopeChatModel
      */
-    public LoveApp(MysqlBasedChatMemory memory, ChatModel dashscopeChatModel,
+    public LoveApp(MysqlBasedChatMemory memory, ChatModel dashscopeChatModel
                    // 从类路径资源加载系统提示模板，引入Spring的Value注解和Resource，别导错了
-                   @Value("classpath:/templates/prompts/Cat.md") Resource systemResource) {
+                   // @Value("classpath:/templates/prompts/Cat.md") Resource systemResource
+    ) {
         // 初始化基于内存的对话记忆
         // ChatMemory memory = MessageWindowChatMemory.builder()
         //         .maxMessages(10) // 最多保存 10 条消息（默认20条）
@@ -51,13 +52,14 @@ public class LoveApp {
         // String fileDir = System.getProperty("user.dir") + "/tmp/char-memory";
         // FileBasedChatMemory memory = new FileBasedChatMemory(fileDir);
 
-        SystemPromptTemplate systemPromptTemplate = new SystemPromptTemplate(systemResource);
-        Message systemMessage = systemPromptTemplate.createMessage(Map.of("name", "耄耋"));
-        Prompt systemPrompt = new Prompt(systemMessage);
+        // SystemPromptTemplate systemPromptTemplate = new SystemPromptTemplate(systemResource);
+        // Message systemMessage = systemPromptTemplate.createMessage(Map.of("name", "耄耋"));
+        // Prompt systemPrompt = new Prompt(systemMessage);
 
 
         chatClient = ChatClient.builder(dashscopeChatModel)
-                .defaultSystem(systemPrompt.getContents())
+                // .defaultSystem(systemPrompt.getContents())
+                .defaultSystem(SYSTEM_PROMPT)
                 .defaultAdvisors(
                         MessageChatMemoryAdvisor.builder(memory).build()
                         // new PoliteCheckAdvisor() // 文明卫士
@@ -76,7 +78,7 @@ public class LoveApp {
     public String doChat(String message, String chatId) {
         ChatResponse chatResponse = chatClient.prompt()
                 .user(message)
-                // .system("简短地回答")
+                .system("简短地回答") // 测试用
                 .advisors(spec -> spec.param(ChatMemory.CONVERSATION_ID, chatId))
                 .call()
                 .chatResponse();
