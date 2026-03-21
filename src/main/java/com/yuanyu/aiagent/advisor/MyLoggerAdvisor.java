@@ -62,7 +62,7 @@ public class MyLoggerAdvisor implements CallAdvisor, StreamAdvisor {
     }
 
     public int getOrder() {
-        return -1;
+        return 1;
     }
 
 }

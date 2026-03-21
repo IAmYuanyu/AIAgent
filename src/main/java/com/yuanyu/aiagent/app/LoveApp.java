@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.AdvisorParams;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.client.advisor.api.Advisor;
 import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.MessageWindowChatMemory;
@@ -40,6 +41,9 @@ public class LoveApp {
 
     @Resource
     private VectorStore loveAppVectorStore;
+
+    @Resource
+    private Advisor loveAppRagCloudAdvisor;
 
     /**
      * 初始化 ChatClient，基于Mysql持久化对话
@@ -128,7 +132,10 @@ public class LoveApp {
                 .user(message)
                 .advisors(spec -> spec.param(ChatMemory.CONVERSATION_ID, chatId))
                 .advisors(new MyLoggerAdvisor())
-                .advisors(QuestionAnswerAdvisor.builder(loveAppVectorStore).build())
+                // 使用 RAG 知识库问答
+                // .advisors(QuestionAnswerAdvisor.builder(loveAppVectorStore).build())
+                // 基于云知识库服务，使用 RAG 检索增强服务
+                .advisors(loveAppRagCloudAdvisor)
                 .call()
                 .chatResponse();
         String content = chatResponse.getResult().getOutput().getText();
