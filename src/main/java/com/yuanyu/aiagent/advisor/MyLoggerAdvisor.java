@@ -40,7 +40,8 @@ public class MyLoggerAdvisor implements CallAdvisor, StreamAdvisor {
     }
 
     protected void logRequest(ChatClientRequest request) {
-        log.info("AI Request: {}", request.prompt());
+        // 暂时改为error，配合“Grep Console”插件看着比较显眼
+        log.error("AI Request: {}", request.prompt());
     }
 
     // 测试
@@ -51,7 +52,8 @@ public class MyLoggerAdvisor implements CallAdvisor, StreamAdvisor {
     // }
 
     protected void logResponse(ChatClientResponse chatClientResponse) {
-        log.info("AI Response: {}", chatClientResponse.chatResponse().getResult().getOutput().getText());
+        // 暂时改为error，配合“Grep Console”插件看着比较显眼
+        log.error("AI Response: {}", chatClientResponse.chatResponse().getResult().getOutput().getText());
 
     }
 
