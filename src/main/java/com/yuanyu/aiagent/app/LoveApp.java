@@ -39,8 +39,11 @@ public class LoveApp {
             "单身状态询问社交圈拓展及追求心仪对象的困扰；恋爱状态询问沟通、习惯差异引发的矛盾；" +
             "已婚状态询问家庭责任与亲属关系处理的问题。引导用户详述事情经过、对方反应及自身想法，以便给出专属解决方案。";
 
+    // @Resource
+    // private VectorStore loveAppVectorStore;
+
     @Resource
-    private VectorStore loveAppVectorStore;
+    private VectorStore pgVectorVectorStore;
 
     @Resource
     private Advisor loveAppRagCloudAdvisor;
@@ -135,7 +138,9 @@ public class LoveApp {
                 // 使用 RAG 知识库问答
                 // .advisors(QuestionAnswerAdvisor.builder(loveAppVectorStore).build())
                 // 基于云知识库服务，使用 RAG 检索增强服务
-                .advisors(loveAppRagCloudAdvisor)
+                // .advisors(loveAppRagCloudAdvisor)
+                // 基于 PgVectorVectorStore 向量存储，使用 RAG 检索增强服务
+                .advisors(QuestionAnswerAdvisor.builder(pgVectorVectorStore).build())
                 .call()
                 .chatResponse();
         String content = chatResponse.getResult().getOutput().getText();

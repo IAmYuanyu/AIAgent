@@ -7,11 +7,22 @@ spring:
       chat:
         options:
           model: qwen-max
+    vectorstore:
+      pgvector:
+        index-type: HNSW
+        distance-type: COSINE_DISTANCE
+        dimensions: 1024 # 维度数，与使用的模型一致
+        max-document-batch-size: 10000
+  # datasource:
+  #   url: jdbc:mysql://localhost:3306/aiagent?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+  #   username: root
+  #   password: 123456
+  #   driver-class-name: com.mysql.cj.jdbc.Driver
   datasource:
-    url: jdbc:mysql://localhost:3306/aiagent?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
-    username: root
-    password: 123456
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:postgresql://rm-cn-sye4pheln0001mzo.rwlb.rds.aliyuncs.com:5432/ai_agent
+    username: ai_agent
+  profiles:
+    active: private
 server:
   port: 8123
   servlet:

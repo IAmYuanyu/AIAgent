@@ -1,5 +1,6 @@
 ### 自定义
 tmp
+/src/main/resources/application-private.yml
 
 HELP.md
 target/
