@@ -6,6 +6,7 @@ import com.yuanyu.aiagent.advisor.ReReadingAdvisor;
 import com.yuanyu.aiagent.chatmemory.FileBasedChatMemory;
 import com.yuanyu.aiagent.chatmemory.MysqlBasedChatMemory;
 import com.yuanyu.aiagent.rag.LoveAppDocumentLoader;
+import com.yuanyu.aiagent.rag.QueryRewriter;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +48,9 @@ public class LoveApp {
 
     @Resource
     private Advisor loveAppRagCloudAdvisor;
+
+    @Resource
+    private QueryRewriter queryRewriter;
 
     /**
      * 初始化 ChatClient，基于Mysql持久化对话
@@ -132,7 +136,8 @@ public class LoveApp {
      */
     public String doChatWithRAG(String message, String chatId) {
         ChatResponse chatResponse = chatClient.prompt()
-                .user(message)
+                // .user(message) // 使用用户原本的提示词
+                .user(queryRewriter.doQueryRewrite(message)) // 使用查询重写后的提示词
                 .advisors(spec -> spec.param(ChatMemory.CONVERSATION_ID, chatId))
                 .advisors(new MyLoggerAdvisor())
                 // 使用 RAG 知识库问答
