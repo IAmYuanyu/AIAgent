@@ -6,6 +6,7 @@ import com.yuanyu.aiagent.advisor.ReReadingAdvisor;
 import com.yuanyu.aiagent.chatmemory.FileBasedChatMemory;
 import com.yuanyu.aiagent.chatmemory.MysqlBasedChatMemory;
 import com.yuanyu.aiagent.rag.LoveAppDocumentLoader;
+import com.yuanyu.aiagent.rag.LoveAppRagCustomAdvisorFactory;
 import com.yuanyu.aiagent.rag.QueryRewriter;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
@@ -56,14 +57,15 @@ public class LoveApp {
      * 初始化 ChatClient，基于Mysql持久化对话
      * @param dashscopeChatModel
      */
-    public LoveApp(MysqlBasedChatMemory memory, ChatModel dashscopeChatModel
+    public LoveApp(// MysqlBasedChatMemory memory,
+                   ChatModel dashscopeChatModel
                    // 从类路径资源加载系统提示模板，引入Spring的Value注解和Resource，别导错了
                    // @Value("classpath:/templates/prompts/Cat.md") Resource systemResource
     ) {
         // 初始化基于内存的对话记忆
-        // ChatMemory memory = MessageWindowChatMemory.builder()
-        //         .maxMessages(10) // 最多保存 10 条消息（默认20条）
-        //         .build();
+        ChatMemory memory = MessageWindowChatMemory.builder()
+                .maxMessages(10) // 最多保存 10 条消息（默认20条）
+                .build();
 
         // 初始化基于本地文件的对话记忆
         // String fileDir = System.getProperty("user.dir") + "/tmp/char-memory";
@@ -145,7 +147,9 @@ public class LoveApp {
                 // 基于云知识库服务，使用 RAG 检索增强服务
                 // .advisors(loveAppRagCloudAdvisor)
                 // 基于 PgVectorVectorStore 向量存储，使用 RAG 检索增强服务
-                .advisors(QuestionAnswerAdvisor.builder(pgVectorVectorStore).build())
+                // .advisors(QuestionAnswerAdvisor.builder(pgVectorVectorStore).build())
+                // 自定义检索过滤条件
+                .advisors(LoveAppRagCustomAdvisorFactory.createLoveAppRagCustomAdvisor(pgVectorVectorStore, "单身"))
                 .call()
                 .chatResponse();
         String content = chatResponse.getResult().getOutput().getText();
