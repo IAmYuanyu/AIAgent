@@ -22,11 +22,13 @@ public class LoveAppRagCustomAdvisorFactory {
         VectorStoreDocumentRetriever documentRetriever = VectorStoreDocumentRetriever.builder()
                 .vectorStore(vectorStore) // 设置向量存储
                 .filterExpression(expression) // 设置过滤条件
-                .similarityThreshold(0.3) // 设置相似度阈值
+                .similarityThreshold(0.6) // 设置相似度阈值
                 .topK(3) // 设置返回结果数量
                 .build();
 
         return RetrievalAugmentationAdvisor.builder()
+                // 设置查询增强器：查询不到上下文时改写用户提示词
+                .queryAugmenter(LoveAppContextualQueryAugmenterFactory.createInstance())
                 .documentRetriever(documentRetriever)
                 .build();
     }

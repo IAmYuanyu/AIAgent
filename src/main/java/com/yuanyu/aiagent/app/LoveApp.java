@@ -138,8 +138,8 @@ public class LoveApp {
      */
     public String doChatWithRAG(String message, String chatId) {
         ChatResponse chatResponse = chatClient.prompt()
-                // .user(message) // 使用用户原本的提示词
-                .user(queryRewriter.doQueryRewrite(message)) // 使用查询重写后的提示词
+                .user(message) // 使用用户原本的提示词
+                // .user(queryRewriter.doQueryRewrite(message)) // 使用查询重写后的提示词
                 .advisors(spec -> spec.param(ChatMemory.CONVERSATION_ID, chatId))
                 .advisors(new MyLoggerAdvisor())
                 // 使用 RAG 知识库问答
