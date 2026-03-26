@@ -20,7 +20,7 @@ public class LoveAppVectorStoreConfig {
 
     private final LoveAppDocumentLoader loveAppDocumentLoader;
 
-    // @Bean
+    @Bean
     public VectorStore loveAppVectorStore(EmbeddingModel dashscopeEmbeddingModel) {
         SimpleVectorStore simpleVectorStore = SimpleVectorStore.builder(dashscopeEmbeddingModel).build();
         // 加载Markdown文档
