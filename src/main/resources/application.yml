@@ -59,3 +59,6 @@ mybatis-plus:
   # 指定使用 MySQL 数据源
   # datasource:
   #   type: com.zaxxer.hikari.HikariDataSource
+baidu:
+  translation:
+    targetLanguage: zh # 目标语言，例如 zh(中文)、en(英文)
