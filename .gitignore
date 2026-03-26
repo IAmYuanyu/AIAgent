@@ -8,6 +8,8 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+.claude
+
 ### STS ###
 .apt_generated
 .classpath
