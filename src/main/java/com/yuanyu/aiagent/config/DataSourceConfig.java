@@ -28,14 +28,14 @@ public class DataSourceConfig {
     }
 
 
-    @Bean(name = "postgresqlDataSource")
-    @ConfigurationProperties(prefix = "spring.datasource.postgresql")
+    // @Bean(name = "postgresqlDataSource")
+    // @ConfigurationProperties(prefix = "spring.datasource.postgresql")
     public DataSource postgresqlDataSource() {
         return DataSourceBuilder.create().build();
     }
 
     // PostgreSQL事务管理器（可选）
-    @Bean(name = "postgresqlTransactionManager")
+    // @Bean(name = "postgresqlTransactionManager")
     public PlatformTransactionManager postgresqlTransactionManager(
             @Qualifier("postgresqlDataSource") DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
@@ -44,7 +44,7 @@ public class DataSourceConfig {
     /**
      * PostgreSQL 的 JdbcTemplate（用于向量存储）
      */
-    @Bean(name = "postgresqlJdbcTemplate")
+    // @Bean(name = "postgresqlJdbcTemplate")
     public JdbcTemplate postgresqlJdbcTemplate(
             @Qualifier("postgresqlDataSource") DataSource dataSource) {
         return new JdbcTemplate(dataSource);

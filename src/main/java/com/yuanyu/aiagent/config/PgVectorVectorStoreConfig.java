@@ -22,7 +22,7 @@ public class PgVectorVectorStoreConfig {
 
     private final LoveAppDocumentLoader loveAppDocumentLoader;
 
-    @Bean
+    // @Bean
     public VectorStore pgVectorVectorStore(
             @Qualifier("postgresqlJdbcTemplate") JdbcTemplate jdbcTemplate,
             EmbeddingModel dashscopeEmbeddingModel) {

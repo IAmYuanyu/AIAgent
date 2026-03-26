@@ -44,8 +44,8 @@ public class LoveApp {
     @Resource
     private VectorStore loveAppVectorStore;
 
-    @Resource
-    private VectorStore pgVectorVectorStore;
+    // @Resource
+    // private VectorStore pgVectorVectorStore;
 
     @Resource
     private Advisor loveAppRagCloudAdvisor;
