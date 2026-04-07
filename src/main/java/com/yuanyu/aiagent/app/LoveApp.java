@@ -5,6 +5,7 @@ import com.yuanyu.aiagent.advisor.PoliteCheckAdvisor;
 import com.yuanyu.aiagent.advisor.ReReadingAdvisor;
 import com.yuanyu.aiagent.chatmemory.FileBasedChatMemory;
 import com.yuanyu.aiagent.chatmemory.MysqlBasedChatMemory;
+import com.yuanyu.aiagent.config.ToolRegistrationConfig;
 import com.yuanyu.aiagent.rag.LoveAppDocumentLoader;
 import com.yuanyu.aiagent.rag.LoveAppRagCustomAdvisorFactory;
 import com.yuanyu.aiagent.rag.QueryRewriter;
@@ -23,6 +24,7 @@ import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
+import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,6 +54,9 @@ public class LoveApp {
 
     @Resource
     private QueryRewriter queryRewriter;
+
+    @Resource
+    private ToolCallback[] allTools;
 
     /**
      * 初始化 ChatClient，基于Mysql持久化对话
@@ -150,6 +155,26 @@ public class LoveApp {
                 // .advisors(QuestionAnswerAdvisor.builder(pgVectorVectorStore).build())
                 // 自定义检索过滤条件
                 // .advisors(LoveAppRagCustomAdvisorFactory.createLoveAppRagCustomAdvisor(loveAppVectorStore, "已婚"))
+                .call()
+                .chatResponse();
+        String content = chatResponse.getResult().getOutput().getText();
+        log.info("content: {}", content);
+        return content;
+    }
+
+    /**
+     * 使用工具进行增强的对话
+     * @param message
+     * @param chatId
+     * @return
+     */
+    public String doChatWithTools(String message, String chatId) {
+        ChatResponse chatResponse = chatClient.prompt()
+                .user(message)
+                .system("简短地回答") // 测试用
+                .tools(allTools)
+                .advisors(spec -> spec.param(ChatMemory.CONVERSATION_ID, chatId))
+                .advisors(new MyLoggerAdvisor()) // 开启日志拦截器，方便观察
                 .call()
                 .chatResponse();
         String content = chatResponse.getResult().getOutput().getText();
