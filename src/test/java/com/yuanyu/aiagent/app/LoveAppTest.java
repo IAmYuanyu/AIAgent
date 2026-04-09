@@ -62,4 +62,14 @@ class LoveAppTest {
         String string = loveApp.doChatWithRAG(message, chatId);
         Assertions.assertNotNull(string);
     }
+
+    @Test
+    void doChatWithMcp() {
+        String chatId = UUID.randomUUID().toString();
+
+        String message = "上海今天天气如何";
+
+        String result = loveApp.doChatWithMcp(message, chatId);
+        Assertions.assertNotNull(result);
+    }
 }

@@ -25,6 +25,7 @@ import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
 import org.springframework.ai.tool.ToolCallback;
+import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -57,6 +58,9 @@ public class LoveApp {
 
     @Resource
     private ToolCallback[] allTools;
+
+    @Resource
+    private ToolCallbackProvider toolCallbackProvider;
 
     /**
      * 初始化 ChatClient，基于Mysql持久化对话
@@ -173,6 +177,26 @@ public class LoveApp {
                 .user(message)
                 .system("简短地回答") // 测试用
                 .tools(allTools)
+                .advisors(spec -> spec.param(ChatMemory.CONVERSATION_ID, chatId))
+                .advisors(new MyLoggerAdvisor()) // 开启日志拦截器，方便观察
+                .call()
+                .chatResponse();
+        String content = chatResponse.getResult().getOutput().getText();
+        log.info("content: {}", content);
+        return content;
+    }
+
+    /**
+     * 使用Mcp工具进行增强的对话
+     * @param message
+     * @param chatId
+     * @return
+     */
+    public String doChatWithMcp(String message, String chatId) {
+        ChatResponse chatResponse = chatClient.prompt()
+                .user(message)
+                .system("简短地回答") // 测试用
+                .toolCallbacks(toolCallbackProvider) // 使用Mcp工具
                 .advisors(spec -> spec.param(ChatMemory.CONVERSATION_ID, chatId))
                 .advisors(new MyLoggerAdvisor()) // 开启日志拦截器，方便观察
                 .call()

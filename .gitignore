@@ -1,6 +1,7 @@
 ### 自定义
 tmp
 /src/main/resources/application-private.yml
+/src/main/resources/mcp-servers.json
 
 HELP.md
 target/

@@ -13,6 +13,10 @@ spring:
         distance-type: COSINE_DISTANCE
         dimensions: 1024 # 维度数，与使用的模型一致
         max-document-batch-size: 10000
+    mcp:
+      client:
+        stdio:
+          servers-configuration: classpath:mcp-servers.json
   # datasource:
   #   url: jdbc:mysql://localhost:3306/aiagent?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
   #   username: root
