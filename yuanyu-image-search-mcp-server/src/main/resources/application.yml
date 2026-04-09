@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: yuanyu-image-search-mcp-server
+  profiles:
+    active: stdio,private
+server:
+  port: 8127

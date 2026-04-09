@@ -1,0 +1,11 @@
+spring:
+  ai:
+    mcp:
+      server:
+        name: yuanyu-image-search-mcp-server
+        version: 0.0.1
+        type: SYNC
+        stdio: true
+  main:
+    web-application-type: none # 将应用类型设为非Web应用
+    banner-mode: off # 禁用启动时的Spring Banner显示
