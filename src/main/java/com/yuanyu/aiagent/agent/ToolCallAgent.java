@@ -48,7 +48,7 @@ public class ToolCallAgent extends ReActAgent{
         this.toolCallingManager = ToolCallingManager.builder().build();
         // 禁用SpringAI内置的工具调用机制，自己手动维护选项和上下文
         this.chatOptions = ToolCallingChatOptions.builder()
-                .internalToolExecutionEnabled(false) // TODO 与教程不一致，可能出bug，导致无法调用工具
+                .internalToolExecutionEnabled(false)
                 .build();
     }
 
