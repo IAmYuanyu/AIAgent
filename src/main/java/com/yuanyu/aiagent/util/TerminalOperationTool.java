@@ -9,8 +9,8 @@ import java.io.InputStreamReader;
 
 public class TerminalOperationTool {
 
-    @Tool(description = "在终端执行命令")
-    public String executeTerminalCommand(@ToolParam(description = "需要在终端执行的命令") String command) {
+    @Tool(description = "在cmd执行命令")
+    public String executeTerminalCommand(@ToolParam(description = "需要在终端执行的命令，比如要输出'yuanyu'，就传入echo 'yuanyu'") String command) {
         StringBuilder output = new StringBuilder();
         try {
             ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", command);

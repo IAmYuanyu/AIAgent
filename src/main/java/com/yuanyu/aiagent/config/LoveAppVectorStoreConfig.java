@@ -20,7 +20,7 @@ public class LoveAppVectorStoreConfig {
 
     private final LoveAppDocumentLoader loveAppDocumentLoader;
 
-    @Bean
+    // @Bean  TODO 暂时关掉启动时加载向量数据库（不然浪费token）
     public VectorStore loveAppVectorStore(EmbeddingModel dashscopeEmbeddingModel) {
         SimpleVectorStore simpleVectorStore = SimpleVectorStore.builder(dashscopeEmbeddingModel).build();
         // 加载Markdown文档

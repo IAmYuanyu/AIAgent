@@ -21,6 +21,7 @@ public class ToolRegistrationConfig {
         ResourceDownloadTool resourceDownloadTool = new ResourceDownloadTool();
         TerminalOperationTool terminalOperationTool = new TerminalOperationTool();
         PDFGenerationTool pdfGenerationTool = new PDFGenerationTool();
+        TerminateTool terminateTool = new TerminateTool();
         // 注册工具
         return ToolCallbacks.from(
             fileOperationTool,
@@ -28,7 +29,8 @@ public class ToolRegistrationConfig {
             webScrapingTool,
             resourceDownloadTool,
             terminalOperationTool,
-            pdfGenerationTool
+            pdfGenerationTool,
+            terminateTool
         );
     }
 }
