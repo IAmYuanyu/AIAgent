@@ -67,7 +67,14 @@ class LoveAppTest {
     void doChatWithMcp() {
         String chatId = UUID.randomUUID().toString();
 
-        String message = "上海今天天气如何";
+        // 测试高德地图Mcp服务
+        // String message = "上海今天天气如何";
+
+        // 测试自定义图片搜索Mcp服务
+        // String message = "帮我搜索一些小狗的图片";
+
+        // 测试我自己写的github仓库阅读mcp服务
+        String message = "帮我看看这个仓库：https://github.com/IAmYuanyu/GitDemo，中的README文件的内容是什么";
 
         String result = loveApp.doChatWithMcp(message, chatId);
         Assertions.assertNotNull(result);
