@@ -3,7 +3,7 @@ package com.yuanyu.aiagent.rag;
 import com.alibaba.cloud.ai.document.TextDocumentParser;
 import com.alibaba.cloud.ai.reader.github.GitHubDocumentReader;
 import com.alibaba.cloud.ai.reader.github.GitHubResource;
-import com.yuanyu.aiagent.util.GitHubUrlParser;
+import com.yuanyu.aiagent.tool.GitHubUrlParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kohsuke.github.GHContent;

@@ -1,4 +1,4 @@
-package com.yuanyu.aiagent.util.translation;
+package com.yuanyu.aiagent.tool.translation;
 
 public final class TargetLanguage {
     public static final String CHINESES = "zh"; // 中文

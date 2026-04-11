@@ -1,4 +1,4 @@
-package com.yuanyu.aiagent.util.translation;
+package com.yuanyu.aiagent.tool.translation;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;

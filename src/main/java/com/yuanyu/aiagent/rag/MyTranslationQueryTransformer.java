@@ -3,7 +3,7 @@ package com.yuanyu.aiagent.rag;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.yuanyu.aiagent.util.translation.TransApi;
+import com.yuanyu.aiagent.tool.translation.TransApi;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

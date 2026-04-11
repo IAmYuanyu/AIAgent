@@ -1,10 +1,8 @@
-package com.yuanyu.aiagent.util;
+package com.yuanyu.aiagent.tool;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class FileOperationToolTest {

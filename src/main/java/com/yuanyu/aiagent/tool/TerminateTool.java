@@ -1,4 +1,4 @@
-package com.yuanyu.aiagent.util;
+package com.yuanyu.aiagent.tool;
 
 import org.springframework.ai.tool.annotation.Tool;
 
