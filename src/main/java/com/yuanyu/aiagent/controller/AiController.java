@@ -2,6 +2,7 @@ package com.yuanyu.aiagent.controller;
 
 import com.yuanyu.aiagent.agent.MyManus;
 import com.yuanyu.aiagent.app.LoveApp;
+import com.yuanyu.aiagent.app.YuanyuApp;
 import jakarta.annotation.Resource;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.tool.ToolCallback;
@@ -18,6 +19,9 @@ public class AiController {
 
     @Resource
     private LoveApp loveApp;
+
+    @Resource
+    private YuanyuApp yuanyuApp;
 
     @Resource
     private ToolCallback[] toolCallbacks;
@@ -45,7 +49,7 @@ public class AiController {
      */
     @GetMapping(value = "/love_app/chat/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> chatWithLoveAppStream(String message, String chatId) {
-        return loveApp.doChatByStream(message, chatId);
+        return yuanyuApp.doChatByStream(message, chatId);
     }
 
     /**
