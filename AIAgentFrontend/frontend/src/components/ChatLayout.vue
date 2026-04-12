@@ -6,7 +6,12 @@
         <h2>{{ title }}</h2>
         <button class="ghost-btn" @click="onCreate">+ 新对话</button>
       </div>
-      <ChatHistory :conversations="conversations" :active-id="activeId" @select="onSelect" />
+      <ChatHistory
+        :conversations="conversations"
+        :active-id="activeId"
+        @select="onSelect"
+        @delete="onDelete"
+      />
     </aside>
     <div class="chat-main">
       <header class="chat-header">
@@ -31,9 +36,10 @@ const props = defineProps({
   loading: { type: Boolean, default: false },
 })
 
-const emit = defineEmits(['create', 'select', 'send'])
+const emit = defineEmits(['create', 'select', 'delete', 'send'])
 
 const onCreate = () => emit('create')
 const onSelect = (id) => emit('select', id)
+const onDelete = (id) => emit('delete', id)
 const onSend = (message) => emit('send', message)
 </script>

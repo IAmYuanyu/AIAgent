@@ -28,6 +28,10 @@ const handleSelect = (id) => {
   store.setActiveConversation(id)
 }
 
+const handleDelete = (id) => {
+  store.deleteConversation(id)
+}
+
 const handleSend = async (message) => {
   const conversation = store.getActiveConversation()
   store.appendUserMessage(message)
@@ -58,6 +62,7 @@ const handleSend = async (message) => {
     :loading="loading"
     @create="handleCreate"
     @select="handleSelect"
+    @delete="handleDelete"
     @send="handleSend"
   />
 </template>

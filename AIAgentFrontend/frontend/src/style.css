@@ -206,6 +206,36 @@ a {
   color: var(--accent);
 }
 
+.history-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.history-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.history-delete {
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--panel);
+  box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
+  cursor: pointer;
+  color: #9aa4b2;
+  font-weight: 700;
+}
+
+.history-delete:hover {
+  color: var(--accent);
+}
+
 .chat-window {
   flex: 1;
   display: flex;
