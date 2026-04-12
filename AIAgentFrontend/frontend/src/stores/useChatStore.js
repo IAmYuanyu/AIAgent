@@ -49,6 +49,16 @@ const appendUserMessage = (scope, text) => {
   }
 }
 
+const createAssistantMessage = (scope, content = '') => {
+  const conversation = getActiveConversation(scope)
+  if (!conversation) return
+  conversation.messages.push({
+    id: `${conversation.id}-assistant-${conversation.messages.length}`,
+    role: 'assistant',
+    content,
+  })
+}
+
 const appendAssistantMessage = (scope, chunk) => {
   const conversation = getActiveConversation(scope)
   if (!conversation) return
@@ -77,6 +87,7 @@ export default function useChatStore(scope = 'assistant') {
     setActiveConversation: (id) => setActiveConversation(scope, id),
     getActiveConversation: () => getActiveConversation(scope),
     appendUserMessage: (text) => appendUserMessage(scope, text),
+    createAssistantMessage: (content) => createAssistantMessage(scope, content),
     appendAssistantMessage: (chunk) => appendAssistantMessage(scope, chunk),
     resetConversation: () => resetConversation(scope),
   }
