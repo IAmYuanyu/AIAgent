@@ -4,7 +4,7 @@ import useChatStore from '../stores/useChatStore'
 import ChatLayout from '../components/ChatLayout.vue'
 import { streamSse } from '../services/sse'
 
-const store = useChatStore()
+const store = useChatStore('agent')
 const loading = ref(false)
 
 const ensureConversation = () => {

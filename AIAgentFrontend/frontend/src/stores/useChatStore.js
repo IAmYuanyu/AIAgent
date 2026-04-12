@@ -1,31 +1,43 @@
 import { reactive, readonly } from 'vue'
 
 const state = reactive({
-  conversations: [],
-  activeConversationId: null,
+  assistant: {
+    conversations: [],
+    activeConversationId: null,
+  },
+  agent: {
+    conversations: [],
+    activeConversationId: null,
+  },
 })
 
-const createConversation = () => {
+const getScope = (scope) => state[scope] || state.assistant
+
+const createConversation = (scope) => {
+  const target = getScope(scope)
   const id = Date.now()
   const conversation = {
     id,
     title: '新对话',
     messages: [],
   }
-  state.conversations.unshift(conversation)
-  state.activeConversationId = id
+  target.conversations.unshift(conversation)
+  target.activeConversationId = id
   return conversation
 }
 
-const setActiveConversation = (id) => {
-  state.activeConversationId = id
+const setActiveConversation = (scope, id) => {
+  const target = getScope(scope)
+  target.activeConversationId = id
 }
 
-const getActiveConversation = () =>
-  state.conversations.find((item) => item.id === state.activeConversationId) || null
+const getActiveConversation = (scope) => {
+  const target = getScope(scope)
+  return target.conversations.find((item) => item.id === target.activeConversationId) || null
+}
 
-const appendUserMessage = (text) => {
-  const conversation = getActiveConversation()
+const appendUserMessage = (scope, text) => {
+  const conversation = getActiveConversation(scope)
   if (!conversation) return
   conversation.messages.push({
     id: `${conversation.id}-user-${conversation.messages.length}`,
@@ -37,8 +49,8 @@ const appendUserMessage = (text) => {
   }
 }
 
-const appendAssistantMessage = (chunk) => {
-  const conversation = getActiveConversation()
+const appendAssistantMessage = (scope, chunk) => {
+  const conversation = getActiveConversation(scope)
   if (!conversation) return
   const last = conversation.messages[conversation.messages.length - 1]
   if (!last || last.role !== 'assistant') {
@@ -52,18 +64,20 @@ const appendAssistantMessage = (chunk) => {
   }
 }
 
-const resetConversation = () => {
-  createConversation()
+const resetConversation = (scope) => {
+  createConversation(scope)
 }
 
-export default function useChatStore() {
+const getState = (scope) => readonly(getScope(scope))
+
+export default function useChatStore(scope = 'assistant') {
   return {
-    state: readonly(state),
-    createConversation,
-    setActiveConversation,
-    getActiveConversation,
-    appendUserMessage,
-    appendAssistantMessage,
-    resetConversation,
+    state: getState(scope),
+    createConversation: () => createConversation(scope),
+    setActiveConversation: (id) => setActiveConversation(scope, id),
+    getActiveConversation: () => getActiveConversation(scope),
+    appendUserMessage: (text) => appendUserMessage(scope, text),
+    appendAssistantMessage: (chunk) => appendAssistantMessage(scope, chunk),
+    resetConversation: () => resetConversation(scope),
   }
 }
