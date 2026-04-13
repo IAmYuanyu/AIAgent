@@ -13,15 +13,15 @@ spring:
         distance-type: COSINE_DISTANCE
         dimensions: 1024 # 维度数，与使用的模型一致
         max-document-batch-size: 10000
-    mcp:
-      client:
-        # sse:
-        #   connections:
-        #     server1:
-        #       url: http://localhost:8127
-        stdio:
-            servers-configuration: classpath:mcp-servers.json
-        request-timeout: 60s
+    # mcp: 部署到服务器时不用mcp
+    #   client:
+    #     # sse:
+    #     #   connections:
+    #     #     server1:
+    #     #       url: http://localhost:8127
+    #     stdio:
+    #         servers-configuration: classpath:mcp-servers.json
+    #     request-timeout: 60s
   # datasource:
   #   url: jdbc:mysql://localhost:3306/aiagent?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
   #   username: root
