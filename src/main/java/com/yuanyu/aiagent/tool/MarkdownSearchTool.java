@@ -2,27 +2,20 @@ package com.yuanyu.aiagent.tool;
 
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
-import java.util.stream.Stream;
 
 public class MarkdownSearchTool {
 
     private static final int CONTEXT_SIZE = 200;
-    private final String directory = new ClassPathResource("static/post").getFile().getAbsolutePath();
-
-    public MarkdownSearchTool() throws IOException {
-        Path dirPath = Paths.get(directory);
-        if (!Files.exists(dirPath)) {
-            throw new IOException("目录不存在：" + directory);
-        }
-    }
+    private static final String RESOURCE_ROOT = "static/post";
 
     @Tool(description = "根据关键词查询缘鱼博客文章，返回博客中匹配到关键词的部分，每个匹配到的部分所在文章标题用[]包裹")
     public String searchMarkdown(
@@ -32,20 +25,22 @@ public class MarkdownSearchTool {
             return "关键词不能为空";
         }
         boolean ignore = ignoreCase == null || ignoreCase;
-        Path basePath = Paths.get(directory);
-        if (!Files.exists(basePath) || !Files.isDirectory(basePath)) {
-            return "目录不存在或不可访问：" + directory;
-        }
-
-        StringBuilder result = new StringBuilder();
         String searchKeyword = ignore ? keyword.toLowerCase(Locale.ROOT) : keyword;
+        StringBuilder result = new StringBuilder();
 
-        try (Stream<Path> pathStream = Files.walk(basePath)) {
-            pathStream.filter(Files::isRegularFile)
-                    .filter(MarkdownSearchTool::isMarkdownFile)
-                    .forEach(path -> searchInFile(path, searchKeyword, keyword, ignore, result));
+        List<Resource> resources;
+        try {
+            resources = listMarkdownResources();
         } catch (IOException e) {
             return "搜索失败：" + e.getMessage();
+        }
+
+        if (resources.isEmpty()) {
+            return "目录不存在或不可访问：" + RESOURCE_ROOT;
+        }
+
+        for (Resource resource : resources) {
+            searchInResource(resource, searchKeyword, keyword, ignore, result);
         }
 
         if (result.length() == 0) {
@@ -54,14 +49,29 @@ public class MarkdownSearchTool {
         return result.toString();
     }
 
-    private static boolean isMarkdownFile(Path path) {
-        String name = path.getFileName().toString().toLowerCase(Locale.ROOT);
-        return name.endsWith(".md") || name.endsWith(".markdown");
+    private static List<Resource> listMarkdownResources() throws IOException {
+        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        List<Resource> resources = new ArrayList<>();
+        addResources(resources, resolver.getResources("classpath*:" + RESOURCE_ROOT + "/**/*.md"));
+        addResources(resources, resolver.getResources("classpath*:" + RESOURCE_ROOT + "/**/*.markdown"));
+        return resources;
     }
 
-    private static void searchInFile(Path path, String searchKeyword, String originalKeyword, boolean ignore, StringBuilder result) {
-        try {
-            String content = new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
+    private static void addResources(List<Resource> target, Resource[] resources) {
+        if (resources == null) {
+            return;
+        }
+        for (Resource resource : resources) {
+            if (resource != null && resource.exists() && resource.isReadable()) {
+                target.add(resource);
+            }
+        }
+    }
+
+    private static void searchInResource(Resource resource, String searchKeyword, String originalKeyword, boolean ignore, StringBuilder result) {
+        try (InputStream inputStream = resource.getInputStream()) {
+            byte[] bytes = inputStream.readAllBytes();
+            String content = new String(bytes, StandardCharsets.UTF_8);
             String searchContent = ignore ? content.toLowerCase(Locale.ROOT) : content;
             int fromIndex = 0;
             int index;
@@ -69,10 +79,11 @@ public class MarkdownSearchTool {
                 int start = Math.max(0, index - CONTEXT_SIZE);
                 int end = Math.min(content.length(), index + originalKeyword.length() + CONTEXT_SIZE);
                 String snippet = content.substring(start, end);
-                String title = getParentDirectoryName(path);
+                String title = getParentDirectoryName(resource);
+                String path = getResourcePath(resource);
                 result.append("[").append(title).append("]\n")
                         .append(snippet).append("\n")
-                        .append(path.toString()).append("\n\n");
+                        .append(path).append("\n\n");
                 fromIndex = index + Math.max(searchKeyword.length(), CONTEXT_SIZE);
             }
         } catch (Exception ignored) {
@@ -80,12 +91,39 @@ public class MarkdownSearchTool {
         }
     }
 
-    private static String getParentDirectoryName(Path path) {
-        Path parent = path.getParent();
-        if (parent == null) {
+    private static String getParentDirectoryName(Resource resource) {
+        String relativePath = getRelativeResourcePath(resource);
+        if (relativePath == null || relativePath.isBlank()) {
             return "";
         }
-        Path name = parent.getFileName();
-        return name == null ? "" : name.toString();
+        int lastSlash = relativePath.lastIndexOf('/');
+        if (lastSlash <= 0) {
+            return "";
+        }
+        String parentPath = relativePath.substring(0, lastSlash);
+        int parentSlash = parentPath.lastIndexOf('/');
+        return parentSlash == -1 ? parentPath : parentPath.substring(parentSlash + 1);
+    }
+
+    private static String getResourcePath(Resource resource) {
+        String relativePath = getRelativeResourcePath(resource);
+        if (relativePath != null && !relativePath.isBlank()) {
+            return RESOURCE_ROOT + "/" + relativePath;
+        }
+        return resource.getDescription();
+    }
+
+    private static String getRelativeResourcePath(Resource resource) {
+        try {
+            String url = resource.getURL().toString();
+            String marker = RESOURCE_ROOT + "/";
+            int index = url.indexOf(marker);
+            if (index == -1) {
+                return null;
+            }
+            return url.substring(index + marker.length());
+        } catch (IOException e) {
+            return null;
+        }
     }
 }
