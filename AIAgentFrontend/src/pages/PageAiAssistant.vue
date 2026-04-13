@@ -4,6 +4,7 @@ import { computed, onMounted, ref } from 'vue'
 import useChatStore from '../stores/useChatStore'
 import ChatLayout from '../components/ChatLayout.vue'
 import { streamSse } from '../services/sse'
+import { API_BASE_URL } from '../services/api'
 
 const store = useChatStore('assistant')
 const loading = ref(false)
@@ -37,7 +38,7 @@ const handleSend = async (message) => {
   store.appendUserMessage(message)
   loading.value = true
   const chatId = conversation?.id
-  const url = `http://localhost:8123/api/ai/love_app/chat/stream?message=${encodeURIComponent(message)}&chatId=${encodeURIComponent(chatId ?? '')}`
+  const url = `${API_BASE_URL}/ai/love_app/chat/stream?message=${encodeURIComponent(message)}&chatId=${encodeURIComponent(chatId ?? '')}`
 
   await streamSse(
     url,

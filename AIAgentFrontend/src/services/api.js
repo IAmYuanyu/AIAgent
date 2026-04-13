@@ -1,7 +1,11 @@
 import axios from 'axios'
 
+export const API_BASE_URL = import.meta.env.PROD
+  ? '/api'
+  : 'http://localhost:8123/api'
+
 const api = axios.create({
-  baseURL: 'http://localhost:8123/api',
+  baseURL: API_BASE_URL,
   timeout: 300000,
 })
 

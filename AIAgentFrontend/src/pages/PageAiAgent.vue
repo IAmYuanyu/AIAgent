@@ -3,6 +3,7 @@ import { computed, onMounted, ref } from 'vue'
 import useChatStore from '../stores/useChatStore'
 import ChatLayout from '../components/ChatLayout.vue'
 import { streamSse } from '../services/sse'
+import { API_BASE_URL } from '../services/api'
 
 const store = useChatStore('agent')
 const loading = ref(false)
@@ -34,7 +35,7 @@ const handleDelete = (id) => {
 const handleSend = async (message) => {
   store.appendUserMessage(message)
   loading.value = true
-  const url = `http://localhost:8123/api/ai/manus/chat?message=${encodeURIComponent(message)}`
+  const url = `${API_BASE_URL}/ai/manus/chat?message=${encodeURIComponent(message)}`
   const stepRegex = /Step\s*\d+\s*:/gi
   let buffer = ''
   let stepMode = false
